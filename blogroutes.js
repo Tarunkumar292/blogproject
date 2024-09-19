@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const slugify = require('slugify');
-const BlogModal = require('./blogschema');
+const BlogModal = require('./categoryschema');
 
 // GET request
 router.get('/get', async (req, res) => {

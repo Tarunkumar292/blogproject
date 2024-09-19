@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 var slug = require('slug')
 var print = console.log.bind(console, '>')
 
-const blogSchema = new Schema({
+const categorySchema = new Schema({
     category:{
         type:String,
         required:true,
@@ -16,5 +16,7 @@ const blogSchema = new Schema({
     }
     })
 
-    let BlogModal =  mongoose.model('category', blogSchema)
+    let BlogModal =  mongoose.model('category', categorySchema)
     module.exports =BlogModal
+
+   
