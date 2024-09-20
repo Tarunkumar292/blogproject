@@ -41,8 +41,7 @@ const blogSchema = new Schema({
         unique: true
     },
     categoryId: {
-        type: Schema.Types.ObjectId,
-        ref: 'categories',
+        type: String,
         required: true
     }
 });

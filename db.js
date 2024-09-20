@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 // Database connection URL
-const dbURL = 'mongodb://localhost:27017/categorydata';
+const dbURL = 'mongodb://localhost:27017/projectdata';
 
 // Connect to the MongoDB database
 mongoose.connect(dbURL, {
