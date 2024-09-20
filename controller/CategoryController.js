@@ -35,20 +35,32 @@ const addCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
     try {
         const id = req.params.id;
-        const slug = req.body.title ? slugify(req.body.title, { lower: true }) : undefined;
-        const updatedPost = { ...req.body, ...(slug && { slug }) };
-        const post = await CategoryModel.findByIdAndUpdate(id, updatedPost, { new: true });
 
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
+        // Ensure the category title exists in the request body
+        if (!req.body.category) {
+            return res.status(400).json({ message: 'Category name is required' });
         }
-        console.log('Data Updated');
-        res.status(200).json(post);
+        // Generate slug from updated category name
+        const slug = slugify(req.body.category, { lower: true });
+        // Combine updated category data with new slug
+        const updatedCategory = { ...req.body, slug };
+        // Update category in the database by ID, while handling uniqueness errors
+        const category = await CategoryModel.findByIdAndUpdate(id, updatedCategory, { new: true, runValidators: true });
+        // Check if category exists
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+        console.log('Category Updated');
+        res.status(200).json(category);
     } catch (err) {
-        console.error('Error updating post:', err);
+        if (err.code === 11000) {
+            return res.status(400).json({ message: 'Category name or slug must be unique' });
+        }
+        console.error(err);
         res.status(500).json({ message: err.message });
     }
-}
+};
+
 
 // Delete controller
 const deleteCategory = async (req, res) => {
