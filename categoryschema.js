@@ -16,7 +16,7 @@ const categorySchema = new Schema({
     }
     })
 
-    let BlogModal =  mongoose.model('category', categorySchema)
-    module.exports =BlogModal
+    let CategoryModel =  mongoose.model('category', categorySchema)
+    module.exports =CategoryModel
 
    
