@@ -16,7 +16,7 @@ const blogRouter = require('./blogroutes');
 //database
 const db = require('./db')
 const bodyparser = require('body-parser')
-
+//bodyparser
 app.use(bodyparser.json())
 // app.use(express.json())
 app.use(bodyparser.urlencoded({ extended: true }));
