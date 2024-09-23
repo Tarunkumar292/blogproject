@@ -1,5 +1,6 @@
 //express
 const express = require('express')
+// const nodemailer = require('nodemailer');
 const app = express()
 // Import routes
 const categoryRouter = require('./categoryroutes');
@@ -20,7 +21,6 @@ app.use(bodyparser.json())
 // app.use(express.json())
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.json());
-
 
 app.use('/category', categoryRouter);
 app.use('/blog', blogRouter);

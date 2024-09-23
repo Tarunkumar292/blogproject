@@ -1,50 +1,24 @@
 const Blogs = require("../blogschema");
+// const nodemailer = require('nodemailer');
 const slugify = require('slugify');
 
 // Get controller
 const getblogs = async (req, res) => {
     try {
-        // Filter, search, sort, and pagination
-        const filter = req.query.filter || {};
-        const search = req.query.search || '';
-        const limit = parseInt(req.query.limit) || 10;
-        const skip = parseInt(req.query.skip) || 0;
-        const sort = req.query.sort || 'createdAt';
-        const order = req.query.order === 'asc' ? 1 : -1;
+        // Get filter, sort, limit, and skip from query parameters
+        let filter = req.query.filter ? JSON.parse(req.query.filter) : {};
+        let sort = req.query.sort ? JSON.parse(req.query.sort) : {};
+        let limit = parseInt(req.query.limit) || 10;
+        let skip = parseInt(req.query.skip) || 0;
 
-        // 1. Create the filter object
-        let filterObj = {};
-        if (filter) {
-            try {
-                // filterObj = JSON.parse(filter);
-            } catch (err) {
-                console.log("Error parsing filter:", err);
-                return res.status(400).json({ message: "Invalid filter format" });
-            }
-        }
+        // Get total count of blogs matching the filter
+        const totalBlogs = await Blogs.countDocuments(filter);
 
-        // 2. Search logic
-        if (search) {
-            filterObj.$or = [
-                { title: { $regex: search, $options: 'i' } }
-            ];
-        }
+        // Fetch blogs with the given filter, sort, limit, and skip
+        let blogs = await Blogs.find(filter).sort(sort).limit(limit).skip(skip);
 
-        // 3. Sorting
-        const sortObj = {};
-        sortObj[sort] = order;
-
-        // 4. Fetch filtered, sorted, and paginated blogs
-        const blogs = await Blogs.find(filterObj)
-            .sort(sortObj)
-            .limit(limit)
-            .skip(skip);
-
-        // 5. Get total count of matching blogs
-        const totalBlogs = await Blogs.countDocuments(filterObj);
-
-        // 6. Return response
-        res.status(200).json({
+        // Return the fetched blogs
+        res.json({
             totalBlogs,
             limit,
             skip,
@@ -52,11 +26,12 @@ const getblogs = async (req, res) => {
             totalPages: Math.ceil(totalBlogs / limit),
             data: blogs
         });
+
     } catch (err) {
-        console.log("Error in fetching data:", err);
-        res.status(500).json({ message: "Internal server error" });
+        console.log(err);
+        res.status(500).json({ error: 'An error occurred while fetching blogs' });
     }
-}
+};
 
 // Post controller
 const addblogs = async (req, res) => {
@@ -67,8 +42,27 @@ const addblogs = async (req, res) => {
             slug: slug
         });
         const result = await post.save();
-        res.status(201).json(result);
+        // const transporter = nodemailer.createTransport({
+        //     host: 'smtp.gmail.com',
+        //     port: 465, 
+        //     secure: true, 
+        //     auth: {
+        //         user: 'sipab23817@exweme.com',
+        //         pass: 'Admin',
+        //     },
+        // })
 
+        // // Send email notification
+        // const mailOptions = {
+        //     from: 'sipab23817@exweme.com',
+        //     to: 'kumartarun2920@example.com',
+        //     subject: 'New Blog Post Created',
+        //     text: `A new blog post has been created:\n\nTitle: ${req.body.title}\nSlug: ${slug}\nContent: ${req.body.content}`,
+        // };
+
+        // await transporter.sendMail(mailOptions);
+
+        res.status(201).json(result);
     } catch (err) {
         console.log("Error in adding data:", err);
         res.status(500).json(err);
