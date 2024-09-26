@@ -1,30 +1,23 @@
 //express
-const express = require('express')
-// const nodemailer = require('nodemailer');
-const app = express()
+const express = require('express');
+const app = express();
 // Import routes
 const categoryRouter = require('./categoryroutes');
 const blogRouter = require('./blogroutes');
-//authentication
-// const passport = require('passport');
-// const setupAuth = require('./auth'); // Import the setupAuth function
-// setupAuth(app);  // Call the function to set up authentication
-
-//users
-// const userschema = require('./userschema')
+const userRouter = require('./userroutes');
 
 //database
-const db = require('./db')
-const bodyparser = require('body-parser')
+const db = require('./db'); // Assuming this connects to the database
 
-app.use(bodyparser.json())
-// app.use(express.json())
-app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// Route setup
 app.use('/category', categoryRouter);
 app.use('/blog', blogRouter);
+app.use('/user', userRouter);
 
-app.listen(3000,()=>{
-    console.log('server is running on port 3000')
-})
+// Start the server
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});

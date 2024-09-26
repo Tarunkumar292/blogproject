@@ -1,3 +1,4 @@
+//Blogs
 const Blogs = require("../blogschema");
 // const nodemailer = require('nodemailer');
 const slugify = require('slugify');
@@ -7,15 +8,16 @@ const getblogs = async (req, res) => {
     try {
         // Get filter, sort, limit, and skip from query parameters
         let filter = req.query.filter ? JSON.parse(req.query.filter) : {};
-        let sort = req.query.sort ? JSON.parse(req.query.sort) : {};
-        let limit = parseInt(req.query.limit) || 10;
+        // let sort = req.query.sort ? JSON.parse(req.query.sort) : {};
+        let limit = parseInt(req.query.limit) || 20;
         let skip = parseInt(req.query.skip) || 0;
 
         // Get total count of blogs matching the filter
         const totalBlogs = await Blogs.countDocuments(filter);
 
         // Fetch blogs with the given filter, sort, limit, and skip
-        let blogs = await Blogs.find(filter).sort(sort).limit(limit).skip(skip);
+        let blogs = await Blogs.find(filter).limit(limit).skip(skip);
+        blogs.sort((a, b) => a.categoryId - b.categoryId); 
 
         // Return the fetched blogs
         res.json({
