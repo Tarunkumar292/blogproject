@@ -7,8 +7,12 @@ const blogRouter = require('./blogroutes');
 const userRouter = require('./userroutes');
 
 //database
-const db = require('./db'); // Assuming this connects to the database
+const db = require('./db')
+const bodyparser = require('body-parser')
 
+app.use(bodyparser.json())
+// app.use(express.json())
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
