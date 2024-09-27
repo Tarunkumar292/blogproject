@@ -1,14 +1,20 @@
-const User = require("../userschema"); 
-const slugify = require('slugify');
+const User = require("../userschema");
+const bcrypt = require('bcrypt');
 
 // Signup route
 const signupuser = async (req, res) => {
     try {
-        const data = req.body;
-        const user = new User(data);
+        const { password, ...data } = req.body;
+
+        // Validate password strength here if needed
+        if (password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+        }
+
+        const user = new User({ ...data, password });
         const response = await user.save();
         console.log('Data Saved Successfully');
-        res.status(200).json(response);
+        res.status(201).json({ response });
     } catch (err) {
         console.log(err);
         res.status(400).json({ error: err.message });
@@ -33,29 +39,19 @@ const loginuser = async (req, res) => {
 
 // Update password route (protected)
 const updatepass = async (req, res) => {
-    try {
-        const userId = req.user.id; 
-        const { oldPassword, newPassword } = req.body;
+    const userId = req.params.id;
+    const { password } = req.body;
 
-        const user = await User.findById(userId);
+    const user = await User.findById(userId);
 
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        // Check if old password matches
-        if (!(await user.comparePassword(oldPassword))) {
-            return res.status(401).json({ message: 'Old password is incorrect' });
-        }
-
-        user.password = newPassword;
-        await user.save();
-
-        res.status(200).json({ message: 'Password updated successfully' });
-    } catch (err) {
-        console.log('Error updating password:', err);
-        res.status(500).json({ error: 'Failed to update password' });
+    if (!user) {
+        return res.status(404).send("User not found");
     }
+
+    // If password is correct, proceed to update the password
+    user.password = await (password);
+    await user.save();
+    return res.status(200).send("Password updated successfully");
 }
 
-module.exports = { signupuser, updatepass, loginuser };
+module.exports = { signupuser, loginuser, updatepass };

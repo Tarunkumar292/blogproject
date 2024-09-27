@@ -1,17 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { signupuser, updatepass, loginuser } = require('./controller/UserController');
+// const authMiddleware = require('./auth');  // Uncomment when ready
 
 // Signup user
 router.post('/signup', signupuser);
 
-// Get user profile (You can uncomment when needed)
-// router.get('/profile', getuser);
+// Update user password by ID (protected route)
+router.put('/updatepass/:id', updatepass); 
 
-// Update user password by ID
-router.put('/profile/update-password/:id', updatepass);
-
-// Login user (use POST instead of DELETE)
+// Login user
 router.post('/login', loginuser);
 
 module.exports = router;

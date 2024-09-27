@@ -17,6 +17,7 @@
     "express-router": "^0.0.1",
     "express-session": "^1.18.0",
     "git": "^0.1.5",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.3",
     "nodemailer": "^6.9.15",
     "passport": "^0.7.0",

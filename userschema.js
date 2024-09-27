@@ -14,7 +14,7 @@ const userschema = new mongoose.Schema({
     },
     mobile: {
         type: String, 
-        required: false
+        required: false,
     },
     address: {
         type: String,
@@ -42,9 +42,9 @@ userschema.pre('save', async function(next) {
 });
 
 // Compare password method
-userschema.methods.comparePassword = async function(userPassword) {
-    return bcrypt.compare(userPassword, this.password);
-}
+userschema.methods.comparePassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
+};
 
 const User = mongoose.model('User', userschema);
 module.exports = User;
